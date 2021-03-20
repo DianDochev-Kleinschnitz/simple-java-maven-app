@@ -7,7 +7,7 @@ pipeline {
     }
     stages {
         stage('Build') {
-             when { changeset "**/pom.xml" }
+            when { changeset "**/pom.xml" }
             steps {
                 sh 'mvn -B -DskipTests clean package'
             }
