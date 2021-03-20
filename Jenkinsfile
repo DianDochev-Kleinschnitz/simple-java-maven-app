@@ -6,15 +6,18 @@ pipeline {
         }
     }
     stages {
-        when { 
-            changeset "**/pom.xml" 
-        }
         stage('Build') {
+            when { 
+                changeset "**/pom.xml" 
+            }
             steps {
                 sh 'mvn -B -DskipTests clean package'
             }
         }
         stage('Test') {
+            when { 
+                changeset "**/pom.xml" 
+            }
             steps {
                 sh 'mvn test'
             }
@@ -25,6 +28,9 @@ pipeline {
             }
         }
         stage('Deliver') {
+            when { 
+                changeset "**/pom.xml" 
+            }
             steps {
                 sh './jenkins/scripts/deliver.sh'
             }
