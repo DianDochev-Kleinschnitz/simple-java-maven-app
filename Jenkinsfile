@@ -7,13 +7,7 @@ pipeline {
     }
     stages {
         stage('Build') {
-            when { 
-                allOf {
-                    expression {  // there are changes in some-directory/...
-                        sh(returnStatus: true, script: 'git diff  origin/master --name-only | grep --quiet "pom.xml"') == 1
-                    }                    
-                }
-            }
+             when { changeset "**/pom.xml" }
             steps {
                 sh 'mvn -B -DskipTests clean package'
             }
