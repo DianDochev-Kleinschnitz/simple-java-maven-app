@@ -12,7 +12,7 @@ pipeline {
                     branch 'master'
                     changeset "**/pom.xml"
                     expression {  // there are changes in some-directory/...
-                        sh(returnStatus: true, script: 'git diff  origin/master --name-only | grep --quiet "pom.xml"') == 0
+                        sh(returnStatus: true, script: 'git diff  origin/master --name-only | grep --quiet "pom.xml"') == 1
                     }                    
                 }
             }
