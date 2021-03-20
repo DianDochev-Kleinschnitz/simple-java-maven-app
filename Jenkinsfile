@@ -6,22 +6,16 @@ pipeline {
         }
     }
     stages {
-        stage("last-changes") {
-            steps {
-                def publisher = LastChanges.getLastChangesPublisher "LAST_SUCCESSFUL_BUILD", "SIDE", "LINE", true, true, "", "", "", "", ""
-                    publisher.publishLastChanges()
-                    def changes = publisher.getLastChanges()
-                    println(changes.getEscapedDiff())
-                    for (commit in changes.getCommits()) {
-                        println(commit)
-                        def commitInfo = commit.getCommitInfo()
-                        println(commitInfo)
-                        println(commitInfo.getCommitMessage())
-                        println(commit.getChanges())
-                    }
-            }
-        }
         stage('Build') {
+            when { 
+                allOf {
+                    branch 'master'
+                    changeset "**/pom.xml"
+                    expression {  // there are changes in some-directory/...
+                        sh(returnStatus: true, script: 'git diff  origin/master --name-only | grep --quiet "pom.xml"') == 0
+                    }                    
+                }
+            }
             steps {
                 sh 'mvn -B -DskipTests clean package'
             }
