@@ -27,23 +27,25 @@ pipeline {
             }
         }
     }
+    environment {
+        EMAIL_TO = 'dian.dochev@web.de'
+    }
     post {
-        always {
-            sh 'echo "This will always run"'
-        }
-        success {
-            sh 'echo "This will run only if successful"'
-        }
-        failure {
-            sh 'echo "This will run only if failed"'
-        }
-        unstable {
-            sh 'echo "This will run only if the run was marked as unstable"'
-        }
-        changed {
-            sh 'echo "This will run only if the state of the Pipeline has changed"'
-            sh 'echo "For example, the Pipeline was previously failing but is now successful"'
-            sh 'echo "... or the other way around :)"'
+            failure {
+                emailext body: 'Check console output at $BUILD_URL to view the results. \n\n ${CHANGES} \n\n -------------------------------------------------- \n${BUILD_LOG, maxLines=100, escapeHtml=false}', 
+                        to: "${EMAIL_TO}", 
+                        subject: 'Build failed in Jenkins: $PROJECT_NAME - #$BUILD_NUMBER'
+            }
+            unstable {
+                emailext body: 'Check console output at $BUILD_URL to view the results. \n\n ${CHANGES} \n\n -------------------------------------------------- \n${BUILD_LOG, maxLines=100, escapeHtml=false}', 
+                        to: "${EMAIL_TO}", 
+                        subject: 'Unstable build in Jenkins: $PROJECT_NAME - #$BUILD_NUMBER'
+            }
+            changed {
+                emailext body: 'Check console output at $BUILD_URL to view the results.', 
+                        to: "${EMAIL_TO}", 
+                        subject: 'Jenkins build is back to normal: $PROJECT_NAME - #$BUILD_NUMBER'
+            }
         }
     }
 }
