@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')
+    }
     stages {
         stage('Build') {
             when { 
@@ -13,7 +16,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'mvn -B -DskipTests clean package'
+                sh 'mvn -B clean package'
             }
         }        
     }
