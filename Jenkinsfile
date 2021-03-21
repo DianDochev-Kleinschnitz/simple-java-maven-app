@@ -1,43 +1,20 @@
 pipeline {
-    agent {
-        when { 
-            changeset "**/pom.xml" 
-        }
-        docker {
-            image 'maven:3-alpine'
-            args '-v /root/.m2:/root/.m2'
-        }
-    }
+    agent none
     stages {
         stage('Build') {
             when { 
                 changeset "**/pom.xml" 
             }
+            agent {
+                docker {
+                    image 'maven:3-alpine'
+                    args '-v /root/.m2:/root/.m2'
+                }
+            }
             steps {
                 sh 'mvn -B -DskipTests clean package'
             }
-        }
-        stage('Test') {
-            when { 
-                changeset "**/pom.xml" 
-            }
-            steps {
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
-        }
-        stage('Deliver') {
-            when { 
-                changeset "**/pom.xml" 
-            }
-            steps {
-                sh './jenkins/scripts/deliver.sh'
-            }
-        }
+        }        
     }
     environment {
         EMAIL_TO = 'dian.dochev@web.de'
