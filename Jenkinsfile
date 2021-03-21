@@ -1,17 +1,10 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout') {
-            when { 
-                changeset "**/pom.xml" 
-            }
-            steps {
-                sh 'echo pom Files are changed'
-            }
-        }        
         stage('Build') {
             when { 
                 changeset "**/pom.xml" 
+                beforeAgent true
             }
             agent {
                 docker {
